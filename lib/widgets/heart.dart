@@ -1,34 +1,106 @@
 import 'package:flutter/material.dart';
-import 'package:rainbow_color/rainbow_color.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class HeartWidget extends StatefulWidget {
+class HeartWidgets extends StatefulWidget {
   @override
-  _HeartWidgetState createState() => _HeartWidgetState();
+  _HeartWidgetsState createState() => _HeartWidgetsState();
 }
 
-class _HeartWidgetState extends State<HeartWidget>
+class _HeartWidgetsState extends State<HeartWidgets>
     with SingleTickerProviderStateMixin {
+  Animation<double> animation;
   AnimationController controller;
-  Animation<Color> _colorAnim;
+
+  List animateColors() {
+    if (animation.value.toInt() == 0) {
+      return [
+        Color(0xffff0000),
+        Color(0xffffa500),
+        Color(0xffffff00),
+        Color(0xff008000),
+        Color(0xff0000ff),
+        Color(0xff4b0082),
+        Color(0xffee82ee),
+      ];
+    } else if (animation.value.toInt() == 1) {
+      return [
+        Color(0xffee82ee),
+        Color(0xffff0000),
+        Color(0xffffa500),
+        Color(0xffffff00),
+        Color(0xff008000),
+        Color(0xff0000ff),
+        Color(0xff4b0082),
+      ];
+    } else if (animation.value.toInt() == 2) {
+      return [
+        Color(0xff4b0082),
+        Color(0xffee82ee),
+        Color(0xffff0000),
+        Color(0xffffa500),
+        Color(0xffffff00),
+        Color(0xff008000),
+        Color(0xff0000ff),
+      ];
+    } else if (animation.value.toInt() == 3) {
+      return [
+        Color(0xff0000ff),
+        Color(0xff4b0082),
+        Color(0xffee82ee),
+        Color(0xffff0000),
+        Color(0xffffa500),
+        Color(0xffffff00),
+        Color(0xff008000),
+      ];
+    } else if (animation.value.toInt() == 4) {
+      return [
+        Color(0xff008000),
+        Color(0xff0000ff),
+        Color(0xff4b0082),
+        Color(0xffee82ee),
+        Color(0xffff0000),
+        Color(0xffffa500),
+        Color(0xffffff00),
+      ];
+    } else if (animation.value.toInt() == 5) {
+      return [
+        Color(0xffffff00),
+        Color(0xff008000),
+        Color(0xff0000ff),
+        Color(0xff4b0082),
+        Color(0xffee82ee),
+        Color(0xffff0000),
+        Color(0xffffa500),
+      ];
+    } else if (animation.value.toInt() == 6) {
+      return [
+        Color(0xffffa500),
+        Color(0xffffff00),
+        Color(0xff008000),
+        Color(0xff0000ff),
+        Color(0xff4b0082),
+        Color(0xffee82ee),
+        Color(0xffff0000),
+      ];
+    }
+    return [
+      Color(0xffffa500),
+      Color(0xffffff00),
+      Color(0xff008000),
+      Color(0xff0000ff),
+      Color(0xff4b0082),
+      Color(0xffee82ee),
+      Color(0xffff0000),
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
     controller =
-        AnimationController(duration: Duration(seconds: 4), vsync: this);
-    _colorAnim = RainbowColorTween([
-      Colors.red,
-      Colors.orange,
-      Colors.yellow,
-      Colors.green,
-      Colors.blue,
-      Colors.indigo,
-      Colors.purple,
-      Colors.red,
-    ]).animate(controller)
-      ..addListener(() {
-        setState(() {});
-      })
+        AnimationController(duration: const Duration(seconds: 3), vsync: this);
+
+    animation = Tween<double>(begin: 0, end: 7).animate(controller)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           controller.reset();
@@ -42,51 +114,46 @@ class _HeartWidgetState extends State<HeartWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CustomPaint(
-        size: Size(440, 470),
-        painter: HeartPainter(_colorAnim.value),
-      ),
+    double width = MediaQuery.of(context).size.width * 0.99;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[6],
+          width: width,
+        ),
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[5],
+          width: width * 0.90,
+        ),
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[4],
+          width: width * 0.75,
+        ),
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[3],
+          width: width * 0.65,
+        ),
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[2],
+          width: width * 0.50,
+        ),
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[1],
+          width: width * 0.40,
+        ),
+        SvgPicture.asset(
+          'assets/heart.svg',
+          color: animateColors()[0],
+          width: width * 0.30,
+        ),
+      ],
     );
-  }
-}
-
-class HeartPainter extends CustomPainter {
-  HeartPainter(this.col);
-  Color col;
-  @override
-  void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
-    Paint paint = Paint();
-    paint
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4;
-
-    Paint paint1 = Paint();
-    paint1
-      ..color = col
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 0;
-
-    double width = size.width;
-    double height = size.height;
-
-    Path path = Path();
-    path.moveTo(0.5 * width, height * 0.35);
-    path.cubicTo(0.2 * width, height * 0.1, -0.25 * width, height * 0.6,
-        0.5 * width, height);
-    path.moveTo(0.5 * width, height * 0.35);
-    path.cubicTo(0.8 * width, height * 0.1, 1.25 * width, height * 0.6,
-        0.5 * width, height);
-
-    canvas.drawPath(path, paint1);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
   }
 }
